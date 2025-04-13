@@ -5,6 +5,7 @@ import (
 )
 
 // Listnode. Must contain a reference to parent.
+// Contains nil pointer reference when created.
 type node struct {
 	data any
 	next *node
