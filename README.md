@@ -39,7 +39,7 @@ The advantage of a single linked list is that data is stored sequentially with p
 
 A disadvantage is that a list can only be traversed from head to tail which makes accessing nodes of really large lists slower leading to an O(n) time complexity. The same applies to inserting and deleting elements in huge lists.
 
-# Getting started
+## Getting started
 
 ### Prerequisites
 
