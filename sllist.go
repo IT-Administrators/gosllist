@@ -13,6 +13,9 @@ type node struct {
 
 type ListWriter interface {
 	AddNode(any) int
+	RemoveNode(any)
+	RemoveNodeOnPos(int)
+	InsertNode(any)
 }
 
 type ListReader interface {
@@ -103,6 +106,20 @@ func (n *node) RemoveNode(a any) {
 	}
 }
 
+// Remove node on specified position.
+//
+// Position count starts by 1.
+func (n *node) RemoveNodeOnPos(pos int) {
+	counter := 1
+	for n != nil {
+		if counter == pos {
+			n.next = n.next.next
+		}
+		n = n.next
+		counter += 1
+	}
+}
+
 // Insert node after specified position.
 //
 // The position is counted from 1.
@@ -116,7 +133,7 @@ func (n *node) InsertNode(a any, pos int) {
 		if counter == pos {
 			// Save next node.
 			temp := n.next
-			// Append new node.
+			// Append new node to current node.
 			n.next = &node{a, nil}
 			// Append former next node to new node.
 			n.next.next = temp

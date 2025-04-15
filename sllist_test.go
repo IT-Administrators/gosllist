@@ -42,6 +42,13 @@ func Test_ListRemoveNode(t *testing.T) {
 	}
 }
 
+func Test_ListRemoveNodeOnPos(t *testing.T) {
+	sLL.RemoveNodeOnPos(2)
+	if sLL.Size() >= (sLL.Size() + 1) {
+		t.Error("node was not removed.")
+	}
+}
+
 func Test_ListInsertNode(t *testing.T) {
 	sLL.InsertNode(6, 2)
 }
