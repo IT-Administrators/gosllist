@@ -35,6 +35,13 @@ func Test_ListAddNode(t *testing.T) {
 	}
 }
 
+func Test_RemoveNode(t *testing.T) {
+	sLL.RemoveNode(3)
+	if sLL.Size() >= (sLL.Size() + 1) {
+		t.Error("node was not removed.")
+	}
+}
+
 func Test_ListTraverse(t *testing.T) {
 	sLL.Traverse()
 }

@@ -60,7 +60,7 @@ func (n *node) Traverse() {
 	fmt.Println()
 }
 
-// Add node to list.
+// Add node to list. All nodes are appended at tail.
 //
 // Any type can be appended, the node type is build inside the function.
 // So appending AddNode("Test") will append the node &{"Test",nil}.
@@ -89,4 +89,16 @@ func (n *node) AddNode(v any) int {
 		n = n.next
 	}
 	return -3
+}
+
+// Remove node with specified value from list.
+//
+// The specified value to be removed has to match the data property of the node.
+func (n *node) RemoveNode(a any) {
+	for n.next != nil {
+		if n.next.data == a {
+			n.next = n.next.next
+		}
+		n = n.next
+	}
 }
