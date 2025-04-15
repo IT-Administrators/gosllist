@@ -102,3 +102,27 @@ func (n *node) RemoveNode(a any) {
 		n = n.next
 	}
 }
+
+// Insert node after specified position.
+//
+// The position is counted from 1.
+func (n *node) InsertNode(a any, pos int) {
+	// Start counting by 1.
+	if pos <= 0 {
+		pos = 1
+	}
+	counter := 1
+	for n != nil {
+		if counter == pos {
+			// Save next node.
+			temp := n.next
+			// Append new node.
+			n.next = &node{a, nil}
+			// Append former next node to new node.
+			n.next.next = temp
+		}
+		// Advance.
+		n = n.next
+		counter += 1
+	}
+}
