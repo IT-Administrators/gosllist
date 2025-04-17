@@ -15,7 +15,7 @@ type ListWriter interface {
 	AddNode(any) int
 	RemoveNode(any)
 	RemoveNodeOnPos(int)
-	InsertNode(any)
+	InsertNode(any, int)
 }
 
 type ListReader interface {
