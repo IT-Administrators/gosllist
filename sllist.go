@@ -1,14 +1,16 @@
 package gosllist
 
 import (
+	"encoding/gob"
 	"fmt"
+	"os"
 )
 
 // Listnode. Must contain a reference to parent.
 // Contains nil pointer reference when created.
 type node struct {
-	data any
-	next *node
+	Data any
+	Next *node
 }
 
 type ListWriter interface {
@@ -23,17 +25,17 @@ type ListReader interface {
 	Size() int
 }
 
-// Create new node with specified data and reference to parent.
+// Create new node with specified Data and reference to parent.
 func NewNode(nodeValue any) *node {
 	return &node{
-		data: nodeValue,
-		next: nil,
+		Data: nodeValue,
+		Next: nil,
 	}
 }
 
 // Get list size.
 func (n *node) Size() int {
-	if n.data == nil && n.next == nil {
+	if n.Data == nil && n.Next == nil {
 		// fmt.Println("-> Empty list!")
 		return 0
 	}
@@ -41,7 +43,7 @@ func (n *node) Size() int {
 	i := 0
 	for n != nil {
 		i++
-		n = n.next
+		n = n.Next
 	}
 	return i
 }
@@ -57,8 +59,8 @@ func (n *node) Traverse() {
 	}
 
 	for n != nil {
-		fmt.Printf("%v -> ", n.data)
-		n = n.next
+		fmt.Printf("%v -> ", n.Data)
+		n = n.Next
 	}
 	fmt.Println()
 }
@@ -77,32 +79,32 @@ func (n *node) AddNode(v any) int {
 	}
 
 	// Iterate through list to check following cases:
-	// - If current node data equals value, node is not appended as it already exists.
+	// - If current node Data equals value, node is not appended as it already exists.
 	// - If current node has no following element, append value as node to list.
-	// Than advance to next node.
+	// Than advance to Next node.
 	for n != nil {
-		if n.data == v {
+		if n.Data == v {
 			// fmt.Printf("node already exists %v\n", v)
 			return -1
 		}
-		if n.next == nil {
-			n.next = &node{v, nil}
+		if n.Next == nil {
+			n.Next = &node{v, nil}
 			return -2
 		}
-		n = n.next
+		n = n.Next
 	}
 	return -3
 }
 
 // Remove node with specified value from list.
 //
-// The specified value to be removed has to match the data property of the node.
+// The specified value to be removed has to match the Data property of the node.
 func (n *node) RemoveNode(a any) {
-	for n.next != nil {
-		if n.next.data == a {
-			n.next = n.next.next
+	for n.Next != nil {
+		if n.Next.Data == a {
+			n.Next = n.Next.Next
 		}
-		n = n.next
+		n = n.Next
 	}
 }
 
@@ -113,9 +115,9 @@ func (n *node) RemoveNodeOnPos(pos int) {
 	counter := 1
 	for n != nil {
 		if counter == pos {
-			n.next = n.next.next
+			n.Next = n.Next.Next
 		}
-		n = n.next
+		n = n.Next
 		counter += 1
 	}
 }
@@ -131,15 +133,61 @@ func (n *node) InsertNode(a any, pos int) {
 	counter := 1
 	for n != nil {
 		if counter == pos {
-			// Save next node.
-			temp := n.next
+			// Save Next node.
+			temp := n.Next
 			// Append new node to current node.
-			n.next = &node{a, nil}
-			// Append former next node to new node.
-			n.next.next = temp
+			n.Next = &node{a, nil}
+			// Append former Next node to new node.
+			n.Next.Next = temp
 		}
 		// Advance.
-		n = n.next
+		n = n.Next
 		counter += 1
 	}
+}
+
+// Save the current list to file.
+//
+// The list is saved to the specified file in binary format.
+func (n *node) Save(file string) error {
+
+	// Remove file if already exists.
+	err := os.Remove(file)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Create file if not exists.
+	saveTo, err := os.Create(file)
+	if err != nil {
+		return fmt.Errorf("cannot create file %v with error %v", file, err)
+	}
+	defer saveTo.Close()
+
+	// Create new encoder and encode.
+	encoder := gob.NewEncoder(saveTo)
+	err = encoder.Encode(&n)
+	if err != nil {
+		return fmt.Errorf("cannot save to file %v with error %v", file, err)
+	}
+	return nil
+}
+
+// Loads a list from a file.
+//
+// The file must have been created by the Save() function.
+func (n *node) Load(file string) error {
+	// Open file.
+	loadFrom, err := os.Open(file)
+
+	if err != nil {
+		return fmt.Errorf("empty list!, Error: %v", err)
+	}
+	defer loadFrom.Close()
+
+	// Create new decoder and decode.
+	decoder := gob.NewDecoder(loadFrom)
+	decoder.Decode(&n)
+
+	return nil
 }

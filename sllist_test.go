@@ -5,13 +5,14 @@ import (
 )
 
 var sLL = &node{nil, nil}
+var safeToFile = "./sllist.gob"
 
 func Test_NewNode(t *testing.T) {
 	v := 1
 	n := NewNode(v)
 	// Overwrite nil list.
 	sLL = n
-	if sLL.next != nil && sLL.data != v {
+	if sLL.Next != nil && sLL.Data != v {
 		t.Error("not able to create node")
 	}
 }
@@ -55,4 +56,27 @@ func Test_ListInsertNode(t *testing.T) {
 
 func Test_ListTraverse(t *testing.T) {
 	sLL.Traverse()
+}
+
+func Test_ListSave(t *testing.T) {
+	err := sLL.Save(safeToFile)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func Test_ListLoad(t *testing.T) {
+	// Create new list to import saved list from file.
+	// t.Log("printing list that was saved to file")
+	// sLL.Traverse()
+	// t.Log("creating empty list to import list from file")
+	nsLL := NewNode(nil)
+	// nsLL.Traverse()
+	err := nsLL.Load(safeToFile)
+	if err != nil {
+		t.Error(err)
+	}
+	// Printing imported list.
+	// t.Log("printing imported list")
+	// nsLL.Traverse()
 }
