@@ -82,9 +82,9 @@ func Test_ListLoad(t *testing.T) {
 }
 
 func Test_ListAppend(t *testing.T) {
-	sll2 := NewNode(3.14)
-	sll2.Next = sLL
-	if sll2.Size() != sll2.Size()+1 {
+	sLL2 := NewNode(3.14)
+	sLL2.Next = sLL
+	if sLL2.Size() != (sLL.Size() + 1) {
 		t.Error("append failed.")
 	}
 }
