@@ -80,3 +80,11 @@ func Test_ListLoad(t *testing.T) {
 	// t.Log("printing imported list")
 	// nsLL.Traverse()
 }
+
+func Test_ListAppend(t *testing.T) {
+	sll2 := NewNode(3.14)
+	sll2.Next = sLL
+	if sll2.Size() != sll2.Size()+1 {
+		t.Error("append failed.")
+	}
+}
