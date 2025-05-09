@@ -4,87 +4,91 @@ import (
 	"testing"
 )
 
-var sLL = &node{nil, nil}
+var sLL = List{}
 var safeToFile = "./sllist.gob"
 
 func Test_NewNode(t *testing.T) {
-	v := 1
-	n := NewNode(v)
-	// Overwrite nil list.
-	sLL = n
-	if sLL.Next != nil && sLL.Data != v {
-		t.Error("not able to create node")
+	testcases := []struct {
+		name     string
+		input    any
+		expected *node
+	}{
+		{
+			name:     "Test node creation (int)",
+			input:    5,
+			expected: &node{5, nil},
+		},
+		{
+			name:     "Test node creation (string)",
+			input:    "Test",
+			expected: &node{"Test", nil},
+		},
+		{
+			name:     "Test node creation (bool)",
+			input:    true,
+			expected: &node{true, nil},
+		},
 	}
-}
-
-func Test_ListSize(t *testing.T) {
-	if sLL.Size() == 0 {
-		t.Error("list is empty")
-	}
-	t.Logf("current list size is %v\n", sLL.Size())
-}
-
-func Test_ListAddNode(t *testing.T) {
-	ints := []int{1, 2, 3, 4, 5}
-	for _, v := range ints {
-		res := sLL.AddNode(v)
-		if res == -3 {
-			t.Error("append not working correctly")
-		} else if res == -1 {
-			t.Logf("value %v already exists", v)
+	for _, tc := range testcases {
+		n := NewNode(tc.input)
+		if n.data != tc.expected.data && n.next != tc.expected.next {
+			t.Errorf("got %v; expected %v", n, tc.expected)
 		}
 	}
 }
 
+func Test_ListAddNode(t *testing.T) {
+	testcases := []struct {
+		name     string
+		input    any
+		expected *node
+	}{
+		{
+			name:     "Test node creation (int)",
+			input:    5,
+			expected: &node{5, nil},
+		},
+		{
+			name:     "Test node creation (string)",
+			input:    "Test",
+			expected: &node{"Test", nil},
+		},
+		{
+			name:     "Test node creation (bool)",
+			input:    true,
+			expected: &node{true, nil},
+		},
+		{
+			name:     "Test node creation (string)",
+			input:    "Test2",
+			expected: &node{"Test2", nil},
+		},
+	}
+	for _, tc := range testcases {
+		sLL.AddNode(tc.input)
+	}
+	// Check if head matches first element in testcases. The head should not change while a node is appended.
+	if testcases[0].expected.data != sLL.GetHead().data {
+		t.Errorf("got head %v; expected head %v", sLL.GetHead().data, testcases[0].expected.data)
+	}
+	// Check if tail is last element of testcases. The tail must always be the last element of the list.
+	if testcases[len(testcases)-1].expected.data != sLL.GetTail().data {
+		t.Errorf("got tail %v; expected tail %v", sLL.GetTail().data, testcases[0].expected.data)
+	}
+}
+
 func Test_ListRemoveNode(t *testing.T) {
-	sLL.RemoveNode(3)
-	if sLL.Size() >= (sLL.Size() + 1) {
-		t.Error("node was not removed.")
+	currentSize := sLL.Size()
+	sLL.RemoveNode("Test")
+	if sLL.Size() != currentSize-1 {
+		t.Errorf("expected size: %v; got size %v", currentSize, sLL.Size())
 	}
 }
 
-func Test_ListRemoveNodeOnPos(t *testing.T) {
-	sLL.RemoveNodeOnPos(2)
-	if sLL.Size() >= (sLL.Size() + 1) {
-		t.Error("node was not removed.")
-	}
-}
-
-func Test_ListInsertNode(t *testing.T) {
-	sLL.InsertNode(6, 2)
+func Test_ListSize(t *testing.T) {
+	t.Logf("current list size is %v.", sLL.Size())
 }
 
 func Test_ListTraverse(t *testing.T) {
 	sLL.Traverse()
-}
-
-func Test_ListSave(t *testing.T) {
-	err := sLL.Save(safeToFile)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func Test_ListLoad(t *testing.T) {
-	// Create new list to import saved list from file.
-	// t.Log("printing list that was saved to file")
-	// sLL.Traverse()
-	// t.Log("creating empty list to import list from file")
-	nsLL := NewNode(nil)
-	// nsLL.Traverse()
-	err := nsLL.Load(safeToFile)
-	if err != nil {
-		t.Error(err)
-	}
-	// Printing imported list.
-	// t.Log("printing imported list")
-	// nsLL.Traverse()
-}
-
-func Test_ListAppend(t *testing.T) {
-	sLL2 := NewNode(3.14)
-	sLL2.Next = sLL
-	if sLL2.Size() != (sLL.Size() + 1) {
-		t.Error("append failed.")
-	}
 }
