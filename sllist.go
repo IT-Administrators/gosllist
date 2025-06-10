@@ -17,8 +17,6 @@ type node struct {
 type ListWriter interface {
 	AddNode(any)
 	RemoveNode(any)
-	RemoveNodeOnPos(int)
-	InsertNode(any, int)
 }
 
 type ListReader interface {

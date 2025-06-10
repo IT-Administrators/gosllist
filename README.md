@@ -19,7 +19,7 @@ This library might be extended in the future. Currently it uses no concurrency t
 
 ### What are singly linked lists? 
 
-The root element of a singly linked list is a ***node***. A node consists of a value and pointer to the memory address of the next element in the list. On creation of a node the pointer to the next element is a nil pointer. This pointer changes when the node is inserted to a list or a node is appended to the current node.
+The root element of a singly linked list is a ***node***. A node consists of a value and pointer to the memory address of the next element in the list. On creation of a node the pointer to the next element is a nil pointer. This pointer changes when another node is appended. 
 
 ```Go
 // Listnode. Must contain a reference to parent.
@@ -32,10 +32,10 @@ type node struct {
 
 Visually reprensentation of a list:
 
-            head ->      element ->         tail
+            head ->         node ->         tail
     [value| ptr] -> [value| ptr] -> [value| nil]
 
-The advantage of a single linked list is that data is stored sequentially with pointer references which makes access to the underlying data very efficient for small lists.
+The advantage of a single linked list is that, data is stored sequentially with pointer references which makes access to the underlying data very efficient for small lists.
 
 A disadvantage is that a list can only be traversed from head to tail which makes accessing nodes of really large lists slower leading to an O(n) time complexity. The same applies to inserting and deleting elements in huge lists.
 
